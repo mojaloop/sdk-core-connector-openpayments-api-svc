@@ -34,9 +34,9 @@ flowchart TD
 ```
 
 ## Translation
-Get a Payment Pointer (Open Payments) -> Get Parties call to mojaloop and return a string with party identifier + dfspId as payment pointer
-Create a Quote (Open Payments) -> POST Quotes call to mojaloop and returns quoteId
-Create an Outgoing Payment (Open Payments) -> POST Transfers call to mojaloop
+- Get a Payment Pointer (Open Payments) -> Get Parties call to mojaloop and return a string with party identifier + dfspId as payment pointer
+- Create a Quote (Open Payments) -> POST Quotes call to mojaloop and returns quoteId
+- Create an Outgoing Payment (Open Payments) -> POST Transfers call to mojaloop
 
 ---
 
