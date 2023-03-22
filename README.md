@@ -33,10 +33,42 @@ flowchart TD
     CC -->|OpenPayments API Responses| Backend
 ```
 
-## Translation
-- Get a Payment Pointer (Open Payments) -> Get Parties call to mojaloop and return a string with party identifier + dfspId as payment pointer
-- Create a Quote (Open Payments) -> POST Quotes call to mojaloop and returns quoteId
-- Create an Outgoing Payment (Open Payments) -> POST Transfers call to mojaloop
+## Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant Backend as Wallet
+    participant CC as Core Connector
+    participant SDK as SDK Scheme Adapter
+    participant Switch as Mojaloop Switch
+
+    Backend->>+CC: Create an Incoming Payment
+    Note right of Backend: POST /MSISDN/987654321/incoming-payments
+    CC->>SDK: POST /transfers
+    SDK->>Switch: GET /parties/MSISDN/987654321
+    Switch->>SDK: PUT /parties/MSISDN/987654321
+    SDK->>CC: Response with a transferID and party information
+    CC->>Backend: Response with a unique payment pointer
+
+    Backend->>CC: Create a Quote
+    Note right of Backend: POST /MSISDN/987654321/quotes
+    CC->>SDK: PUT /transfers (acceptParty: true)
+    SDK->>Switch: POST /quotes
+    Switch->>SDK: PUT /quotes
+    SDK->>CC: Response with quote information
+    CC->>Backend: Response with a quote identifier
+
+    Backend->>CC: Create an Outgoing Payment (quote identifier)
+    Note right of Backend: POST /MSISDN/987654321/outgoing-payments
+    CC->>SDK: PUT /transfers (acceptQuote: true)
+    SDK->>Switch: POST /transfers
+    Switch->>SDK: PUT /transfers
+    SDK->>CC: Response with transfer status
+    CC->>Backend: Response with transfer status
+
+```
 
 ---
 

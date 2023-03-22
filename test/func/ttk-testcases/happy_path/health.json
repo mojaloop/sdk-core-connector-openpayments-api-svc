@@ -1,0 +1,54 @@
+{
+  "options": {},
+  "name": "multi",
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Check Health Endpoint",
+      "fileInfo": {
+        "path": "ttk-testcases/happy_path/health.json"
+      },
+      "requests": [
+        {
+          "id": 1,
+          "description": "Get Health of Backend Service",
+          "apiVersion": {
+            "minorVersion": 0,
+            "majorVersion": 1,
+            "type": "scheme_adapter_outbound",
+            "asynchronous": true,
+            "prefix": "/sdk-out",
+            "hostnames": [],
+            "specFile": "spec_files/api_definitions/mojaloop_sdk_outbound_scheme_adapter_1.0/api_spec.yaml",
+            "callbackMapFile": "spec_files/api_definitions/mojaloop_sdk_outbound_scheme_adapter_1.0/callback_map.json",
+            "responseMapFile": "spec_files/api_definitions/mojaloop_sdk_outbound_scheme_adapter_1.0/response_map.json",
+            "jsfRefFile": "spec_files/api_definitions/mojaloop_sdk_outbound_scheme_adapter_1.0/mockRef.json",
+            "triggerTemplatesFolder": "spec_files/api_definitions/mojaloop_sdk_outbound_scheme_adapter_1.0/trigger_templates"
+          },
+          "operationPath": "/",
+          "path": "/",
+          "method": "get",
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Status in the body is OK",
+                "exec": [
+                  "expect(response.body.status).equals('OK')"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

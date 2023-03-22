@@ -1,0 +1,57 @@
+{
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Open Payments - Create Incoming Payment",
+      "requests": [
+        {
+          "id": 1,
+          "description": "Create Incoming Payment",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false
+          },
+          "operationPath": "/{idType}/{idValue}/incoming-payments",
+          "path": "/MSISDN/{$inputs.MSISDN_1}/incoming-payments",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "{$inputs.MSISDN_1}"
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "body": {
+            "incomingAmount": {
+              "value": 1000,
+              "assetCode": "USD",
+              "assetScale": 2
+            },
+            "expiresAt": "2026-05-24T08:38:08.699-04:00",
+            "description": "Test",
+            "externalRef": "optional-ref-here"
+          },
+          "queryParams": {},
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Status in the body is OK",
+                "exec": [
+                  "expect(response.body.incomingAmount.value).not.equals(0)"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

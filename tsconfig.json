@@ -1,0 +1,61 @@
+{
+  "include": [
+    "src",
+    "test",
+    "jest.bdd.config.js",
+    "jest.config.js",
+    "jest.integration.config.js",
+    ".eslintrc.js",
+    "docker",
+    "commitlint.config.js",
+    "types/ambient.d.ts",
+    "config",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "test",
+    "commitlint.config.js",
+    "jest.bdd.config.js",
+    "jest.config.js"
+  ],
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "rootDirs": [
+      "src",
+      "test"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@project-shared": [ "./src/shared/index.ts" ],
+      "@project-interfaces": [ "./src/interface/types/index.ts" ],
+      "@project-src/*": [ "src/*" ],
+      "@project-types/*": [ "src/types/*" ],
+      "@project-shared/*": [ "./src/shared/*" ]
+    },
+    "lib": [
+      "es2020"
+    ],
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": "./",
+    "outDir": "dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}

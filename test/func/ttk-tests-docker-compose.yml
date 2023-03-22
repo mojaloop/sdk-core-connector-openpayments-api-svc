@@ -1,0 +1,21 @@
+version: '3.7'
+networks:
+  mojaloop-net:
+    name: mojaloop-net
+
+services:
+  ttk-tests:
+    image: mojaloop/ml-testing-toolkit-client-lib:v1.0.0
+    user: root
+    volumes:
+      - "./config/ttksim/environments:/opt/app/environments"
+      - "./reports:/opt/app/reports"
+      - "./ttk-testcases:/opt/app/ttk-testcases"
+    networks:
+      - mojaloop-net
+    command:
+      - sh
+      - -c
+      - |
+        echo "Executing TTK Testcases" &&
+        npm run cli -- -u http://ttksim:5050 -l 2 -i /opt/app/ttk-testcases -e environments/hub_local_environment.json --report-format html --report-target file://reports/ttk-func-tests-report.html

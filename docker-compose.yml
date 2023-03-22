@@ -1,0 +1,100 @@
+version: '3.7'
+networks:
+  mojaloop-net:
+    name: mojaloop-net
+
+services:
+
+  sdk-core-connector-openpayments-api-svc:
+    image: mojaloop/sdk-core-connector-openpayments-api-svc:local
+    build:
+      context: .
+    environment:
+      - ENDPOINTS_SDK_URL=http://sdk-scheme-adapter:4001
+    ports:
+      - "3000:3000"
+
+  sdk-scheme-adapter:
+    image: mojaloop/sdk-scheme-adapter:v22.0.0
+    command:
+    - sh
+    - -c
+    - "yarn start:api-svc"
+    environment:
+      - AUTO_ACCEPT_PARTY=true
+      - AUTO_ACCEPT_QUOTES=false
+      - BACKEND_ENDPOINT=fx-converter:3003
+      - CACHE_HOST=redis
+      - CACHE_PORT=6379
+      - CACHE_URL=redis://redis:6379
+      - DFSP_ID=senderfsp
+      - ENABLE_TEST_FEATURES=true
+      - INBOUND_LISTEN_PORT=4000
+      - INBOUND_MUTUAL_TLS_ENABLED=false
+      - IN_CA_CERT_PATH=/secrets/inbound-cacert.pem
+      - IN_SERVER_CERT_PATH=/secrets/inbound-cert.pem
+      - IN_SERVER_KEY_PATH=/secrets/inbound-key.pem
+      - JWS_SIGN=false
+      - JWS_SIGNING_KEY_PATH=/jwsSigningKey.key
+      - JWS_VERIFICATION_KEYS_DIRECTORY=/jwsVerificationKeys
+      - MULTIPLE_PARTIES_RESPONSE=false
+      - OUTBOUND_LISTEN_PORT=4001
+      - OUTBOUND_MUTUAL_TLS_ENABLED=false
+      - OUT_CA_CERT_PATH=/secrets/outbound-cacert.pem
+      - OUT_CLIENT_CERT_PATH=/secrets/outbound-cert.pem
+      - OUT_CLIENT_KEY_PATH=/secrets/outbound-key.pem
+      - PEER_ENDPOINT=mojaloop-testing-toolkit:4040
+      - ALS_ENDPOINT=mojaloop-testing-toolkit:4040
+      - TEST_CA_CERT_PATH=/secrets/test-cacert.pem
+      - TEST_CLIENT_CERT_PATH=/secrets/test-cert.pem
+      - TEST_CLIENT_KEY_PATH=/secrets/test-key.pem
+      - TEST_LISTEN_PORT=4002
+      - TEST_MUTUAL_TLS_ENABLED=false
+      - WS_PORT=4003
+      - VALIDATE_INBOUND_JWS=false
+      - RESERVE_NOTIFICATION=false
+      # - RESOURCE_VERSIONS="transfers=1.1"
+      - PM4ML_ENABLED=false
+      - ENABLE_BACKEND_EVENT_HANDLER=false
+      - ENABLE_FSPIOP_EVENT_HANDLER=false
+    ports:
+      - "4000:4000"
+      # - "4001:4001"
+    volumes:
+      - ./docker/sdk/secrets/outbound-cacert.pem:/secrets/outbound-cacert.pem
+      - ./docker/sdk/secrets/outbound-cert.pem:/secrets/outbound-cert.pem
+      - ./docker/sdk/secrets/outbound-key.pem:/secrets/outbound-key.pem
+      - ./docker/sdk/secrets/inbound-cacert.pem:/secrets/inbound-cacert.pem
+      - ./docker/sdk/secrets/inbound-cert.pem:/secrets/inbound-cert.pem
+      - ./docker/sdk/secrets/inbound-key.pem:/secrets/inbound-key.pem
+      - ./docker/sdk/secrets/jwsSigningKey.key:/jwsSigningKey.key
+      - ./docker/sdk/secrets/jwsVerificationKeys:/jwsVerificationKeys
+    restart: always
+    depends_on:
+      redis:
+        condition: service_started
+
+  mojaloop-testing-toolkit:
+    image: mojaloop/ml-testing-toolkit:v15.7.0
+    # image: mojaloop/ml-testing-toolkit:v16.1.0-snapshot.3
+    user: root
+    volumes:
+      - "./docker/ttk/spec_files:/opt/app/spec_files"
+      - "./docker/ttk/environments:/opt/app/examples/environments"
+    ports:
+      - "4040:4040"
+      - "5050:5050"
+    command:
+      - sh
+      - -c
+      - "npm start"
+  mojaloop-testing-toolkit-ui:
+    image: mojaloop/ml-testing-toolkit-ui:v15.1.3
+    ports:
+      - "6060:6060"
+    environment:
+      - API_BASE_URL=http://localhost:5050
+      - AUTH_ENABLED=FALSE
+    command:
+      - sh
+      - /usr/share/nginx/start.sh
