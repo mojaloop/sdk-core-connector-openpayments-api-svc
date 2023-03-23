@@ -15,6 +15,10 @@
     {
       "name": "outgoing-payment.json",
       "type": "file"
+    },
+    {
+      "name": "e2e-transfer.json",
+      "type": "file"
     }
   ]
 }

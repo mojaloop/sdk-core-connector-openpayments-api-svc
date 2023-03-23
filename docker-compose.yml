@@ -21,7 +21,7 @@ services:
     - -c
     - "yarn start:api-svc"
     environment:
-      - AUTO_ACCEPT_PARTY=true
+      - AUTO_ACCEPT_PARTY=false
       - AUTO_ACCEPT_QUOTES=false
       - BACKEND_ENDPOINT=fx-converter:3003
       - CACHE_HOST=redis
@@ -59,7 +59,7 @@ services:
       - ENABLE_FSPIOP_EVENT_HANDLER=false
     ports:
       - "4000:4000"
-      # - "4001:4001"
+      - "4001:4001"
     volumes:
       - ./docker/sdk/secrets/outbound-cacert.pem:/secrets/outbound-cacert.pem
       - ./docker/sdk/secrets/outbound-cert.pem:/secrets/outbound-cert.pem
@@ -73,6 +73,11 @@ services:
     depends_on:
       redis:
         condition: service_started
+  redis:
+    image: "redis:6.2.4-alpine"
+    # ports:
+    #   - "6379:6379"
+    restart: always
 
   mojaloop-testing-toolkit:
     image: mojaloop/ml-testing-toolkit:v15.7.0

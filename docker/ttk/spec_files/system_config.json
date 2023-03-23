@@ -95,9 +95,9 @@
       "asynchronous": true
     },
     {
-      "type": "rafiki_core_connector",
+      "type": "openpayments_core_connector",
       "version": "0.1",
-      "folderPath": "rafiki_core_connector_0.1",
+      "folderPath": "openpayments_core_connector_0.1",
       "asynchronous": false
     }
   ],

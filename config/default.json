@@ -14,7 +14,7 @@
   },
   "endpoints": {
     "backendUrl": "http://localhost:3003",
-    "sdkUrl": "http://localhost:4040/sdk-out"
+    "sdkUrl": "http://localhost:4001"
   },
   "inspect": {
     "depth": 4,

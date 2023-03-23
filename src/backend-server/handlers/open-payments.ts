@@ -50,13 +50,12 @@ async function IdTypeCreateIncomingPayment(_context: unknown, _request: Request,
       // name: data.to.displayName
       name: data.getPartiesResponse.body.name
     }
-    const incomingAmount = IlpTransformer.toILPAmountFromFspiopAmount(data.quoteResponse.body.transferAmount.amount, data.quoteResponse.body.transferAmount.currency)
     const curDate = (new Date()).toISOString()
     const responseOut = {
       id: IlpTransformer.toILPIncomingPaymentUrlFromSDKTransferId(data.transferId),
       paymentPointer: "$Pch.Cnp",
       completed: false,
-      incomingAmount,
+      incomingAmount: reqBody.incomingAmount,
       receivedAmount: {
         value: 0,
         assetCode: currency,

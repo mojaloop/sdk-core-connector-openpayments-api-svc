@@ -19,8 +19,8 @@ services:
   ttksim:
     networks:
         - mojaloop-net
-    # image: mojaloop/ml-testing-toolkit:v15.6.3
-    image: mojaloop/ml-testing-toolkit:v16.1.0-snapshot.3
+    image: mojaloop/ml-testing-toolkit:v15.6.3
+    # image: mojaloop/ml-testing-toolkit:v16.1.0-snapshot.3
     user: root
     volumes:
       - "./config/ttksim/spec_files:/opt/app/spec_files"

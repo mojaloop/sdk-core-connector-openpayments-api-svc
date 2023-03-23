@@ -1,0 +1,154 @@
+{
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Open Payments - End to End transfer",
+      "requests": [
+        {
+          "id": 1,
+          "description": "Create Incoming Payment",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false
+          },
+          "operationPath": "/{idType}/{idValue}/incoming-payments",
+          "path": "/MSISDN/{$inputs.MSISDN_1}/incoming-payments",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "{$inputs.MSISDN_1}"
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "body": {
+            "incomingAmount": {
+              "value": 1000,
+              "assetCode": "USD",
+              "assetScale": 2
+            },
+            "expiresAt": "2026-05-24T08:38:08.699-04:00",
+            "description": "Test",
+            "externalRef": "optional-ref-here"
+          },
+          "queryParams": {},
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "incomingAmount in the response should not be zero",
+                "exec": [
+                  "expect(response.body.incomingAmount.value).not.equals(0)"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": 2,
+          "description": "Create Quote",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false
+          },
+          "operationPath": "/{idType}/{idValue}/quotes",
+          "path": "/MSISDN/{$inputs.MSISDN_1}/quotes",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "{$inputs.MSISDN_1}"
+          },
+          "body": {
+            "receiver": "{$prev.1.response.body.id}",
+            "receiveAmount": {
+              "value": "2500",
+              "assetCode": "USD",
+              "assetScale": 2
+            }
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Status in the body is OK",
+                "exec": [
+                  "expect(response.body).to.have.property('expiresAt')"
+                ]
+              }
+            ]
+          },
+          "disabled": false
+        },
+        {
+          "id": 3,
+          "description": "Create Outgoing Payment",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false
+          },
+          "operationPath": "/{idType}/{idValue}/outgoing-payments",
+          "path": "/MSISDN/{$inputs.MSISDN_1}/outgoing-payments",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "{$inputs.MSISDN_1}"
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "body": {
+            "quoteId": "{$prev.2.response.body.id}",
+            "description": "string",
+            "externalRef": "string"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Response should have sentAmount",
+                "exec": [
+                  "expect(response.body).to.have.property('sentAmount')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "parameter failed in response should not be true",
+                "exec": [
+                  "expect(response.body.failed).not.equals(true)"
+                ]
+              }
+            ]
+          },
+          "disabled": false
+        }
+      ],
+      "fileInfo": {
+        "path": "happy_path/e2e-transfer.json"
+      }
+    }
+  ]
+}
