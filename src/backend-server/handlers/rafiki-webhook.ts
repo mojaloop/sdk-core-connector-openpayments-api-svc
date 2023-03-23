@@ -38,7 +38,7 @@ async function WebHookIncomingPaymentEvent(_context: unknown, _request: Request,
         if (data.currentState === 'COMPLETED') {
           transferStatus = 'COMPLETED'
         }
-        const receiveAmount = IlpTransformer.toAmountFromFspiopToILP(data.quoteResponse.body.payeeReceiveAmount.amount, data.quoteResponse.body.payeeReceiveAmount.currency)
+        const receiveAmount = IlpTransformer.toILPAmountFromFspiopAmount(data.quoteResponse.body.payeeReceiveAmount.amount, data.quoteResponse.body.payeeReceiveAmount.currency)
         const curDate = (new Date()).toISOString()
         const callbackReqBody = {
           id: sdkTransferId,

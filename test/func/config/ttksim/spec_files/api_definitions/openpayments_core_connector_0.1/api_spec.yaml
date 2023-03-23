@@ -544,12 +544,25 @@ paths:
         - $ref: '#/components/parameters/signature'
       tags:
         - outgoing-payment
-  /quotes:
+  '/{idType}/{idValue}/quotes':
     post:
       summary: Create a Quote
       tags:
         - quote
-      operationId: create-quote
+      operationId: create-quote-id-type-value
+      parameters:
+        - name: idType
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/idType'
+        - name: idValue
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/idValue'
+        - $ref: '#/components/parameters/signature-input'
+        - $ref: '#/components/parameters/signature'
       responses:
         '201':
           description: Quote Created
@@ -633,10 +646,6 @@ paths:
           The quote must be created with a (`sendAmount` xor `receiveAmount`) unless the `receiver` is an Incoming Payment which has an `incomingAmount`.
         required: true
       description: A **quote** is a sub-resource of a payment pointer. It represents a quote for a payment from the payment pointer.
-      parameters:
-        - $ref: '#/components/parameters/signature-input'
-        - $ref: '#/components/parameters/signature'
-    description: Create a new quote at the payment pointer.
   '/incoming-payments/{id}':
     get:
       summary: Get an Incoming Payment

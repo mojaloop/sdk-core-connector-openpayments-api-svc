@@ -4,5 +4,6 @@ import RafikiWebhook from './rafiki-webhook'
 
 export default {
   HealthGet: SharedHandlers.HealthGet,
-  "create-incoming-payment-id-type-value": OpenPayments.IdTypeIncomingPaymentsPost
+  "create-incoming-payment-id-type-value": OpenPayments.IdTypeIncomingPaymentsPost,
+  "create-quote-id-type-value": OpenPayments.IdTypeCreateQuote
 }

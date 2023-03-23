@@ -5,11 +5,11 @@
       "type": "file"
     },
     {
-      "name": "incoming-payments.json",
+      "name": "incoming-payment.json",
       "type": "file"
     },
     {
-      "name": "e2e_transfer.json",
+      "name": "create-quote.json",
       "type": "file"
     }
   ]

@@ -1,0 +1,62 @@
+{
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Create Quote - OpenPayments",
+      "requests": [
+        {
+          "id": 1,
+          "description": "Create Quote",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false,
+            "specFile": "spec_files/api_definitions/openpayments_core_connector_0.1/api_spec.yaml",
+            "callbackMapFile": "spec_files/api_definitions/openpayments_core_connector_0.1/callback_map.json",
+            "responseMapFile": "spec_files/api_definitions/openpayments_core_connector_0.1/response_map.json",
+            "jsfRefFile": "spec_files/api_definitions/openpayments_core_connector_0.1/mockRef.json",
+            "triggerTemplatesFolder": "spec_files/api_definitions/openpayments_core_connector_0.1/trigger_templates"
+          },
+          "operationPath": "/{idType}/{idValue}/quotes",
+          "path": "/MSISDN/987654321/quotes",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "987654321"
+          },
+          "body": {
+            "receiver": "$Cnp/incoming-payments/02780c39-648e-1534-ba9d-004e0ea31477",
+            "receiveAmount": {
+              "value": "2500",
+              "assetCode": "USD",
+              "assetScale": 2
+            }
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Status in the body is OK",
+                "exec": [
+                  "expect(response.body).to.have.property('expiresAt')"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "fileInfo": {
+        "path": "happy_path/create-quote.json"
+      }
+    }
+  ]
+}

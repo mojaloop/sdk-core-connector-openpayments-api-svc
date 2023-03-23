@@ -32,12 +32,12 @@ export class GspTransformer {
 
 export class IlpTransformer {
 
-  static toAmountFromILPtoFspiop = (value: number, assetScale: number) => {
+  static toFspiopAmountFromILPAmount = (value: number, assetScale: number) => {
     const calculatedAmount = value / Math.pow(10, assetScale)
     return calculatedAmount
   }
 
-  static toAmountFromFspiopToILP = (amount: number, currency: string) => {
+  static toILPAmountFromFspiopAmount = (amount: number, currency: string) => {
     const currencyObj = currencyCodes.code(currency)
     const assetScale = currencyObj?.digits || 0
     const calculatedValue = amount * Math.pow(10, assetScale)
@@ -46,6 +46,24 @@ export class IlpTransformer {
       assetCode: currency,
       assetScale
     }
+  }
+
+  static toILPIncomingPaymentUrlFromSDKTransferId = (transferId: string) => {
+    return '$Cnp/incoming-payments/' + transferId
+  }
+
+  static toSDKTransferIdFromILPIncomingPaymentUrl = (incomingPaymentUrl: string) => {
+    const tempArray = incomingPaymentUrl.split('/')
+    return tempArray[tempArray.length - 1]
+  }
+
+  static toILPQuoteUrlFromSDKTransferId = (transferId: string) => {
+    return '$Cnp/quotes/' + transferId
+  }
+
+  static toSDKTransferIdFromILPQuoteUrl = (quoteUrl: string) => {
+    const tempArray = quoteUrl.split('/')
+    return tempArray[tempArray.length - 1]
   }
  
   // static toUUID(associationId: string): string {

@@ -51,7 +51,10 @@
             ]
           }
         }
-      ]
+      ],
+      "fileInfo": {
+        "path": "happy_path/incoming-payment.json"
+      }
     }
   ]
 }
