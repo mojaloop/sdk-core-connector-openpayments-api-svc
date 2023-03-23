@@ -5,16 +5,16 @@ networks:
 
 services:
 
-  # sdk-core-connector-openpayments-api-svc:
-  #   networks:
-  #       - mojaloop-net
-  #   image: mojaloop/sdk-core-connector-openpayments-api-svc:local
-  #   build:
-  #     context: ../..
-  #   environment:
-  #     - ENDPOINTS_SDK_URL=http://ttksim:4040/sdk-out
-  #   ports:
-  #     - "3000:3000"
+  sdk-core-connector-openpayments-api-svc:
+    networks:
+        - mojaloop-net
+    image: mojaloop/sdk-core-connector-openpayments-api-svc:local
+    build:
+      context: ../..
+    environment:
+      - ENDPOINTS_SDK_URL=http://ttksim:4040/sdk-out
+    ports:
+      - "3000:3000"
 
   ttksim:
     networks:

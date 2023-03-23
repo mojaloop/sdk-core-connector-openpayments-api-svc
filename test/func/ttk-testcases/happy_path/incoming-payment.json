@@ -43,7 +43,7 @@
               },
               {
                 "id": 2,
-                "description": "Status in the body is OK",
+                "description": "incomingAmount in the response should not be zero",
                 "exec": [
                   "expect(response.body.incomingAmount.value).not.equals(0)"
                 ]

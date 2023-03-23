@@ -4,7 +4,7 @@ import axios from 'axios'
 import { StateResponseToolkit } from '../../shared/plugins/state'
 import { IlpTransformer } from '../../shared/transformer'
 
-async function IdTypeIncomingPaymentsPost(_context: unknown, _request: Request, h: StateResponseToolkit): Promise<ResponseObject>  {
+async function IdTypeCreateIncomingPayment(_context: unknown, _request: Request, h: StateResponseToolkit): Promise<ResponseObject>  {
   try {
     const destUrl = h.context.serviceConfig.endpoints.sdkUrl + '/transfers'
 
@@ -135,7 +135,65 @@ async function IdTypeCreateQuote(_context: unknown, _request: Request, h: StateR
   }
 }
 
+async function IdTypeCreateOutgoingPayment(_context: unknown, _request: Request, h: StateResponseToolkit): Promise<ResponseObject>  {
+  try {
+    // TODO: optimize the following deep copy function
+    const reqBody = JSON.parse(JSON.stringify(_request.payload))
+    // const toIdType = _request.params.idType
+    // const toIdValue = _request.params.idValue
+
+    const sdkTransferId = IlpTransformer.toSDKTransferIdFromILPQuoteUrl(reqBody.quoteId)
+    const destUrl = h.context.serviceConfig.endpoints.sdkUrl + '/transfers/' + sdkTransferId
+
+    const requestOut = {
+      acceptQuote: true
+    }
+
+    const headersOut = {}
+
+    const { data, status } = await axios.put(
+      destUrl,
+      requestOut,
+      {
+        headers: headersOut,
+      },
+    );
+
+    // Construct the response payload of open-payments based on `data` here
+    const sendAmount = IlpTransformer.toILPAmountFromFspiopAmount(data.quoteResponse.body.transferAmount.amount, data.quoteResponse.body.transferAmount.currency)
+    const receiveAmount = IlpTransformer.toILPAmountFromFspiopAmount(data.quoteResponse.body.payeeReceiveAmount.amount, data.quoteResponse.body.payeeReceiveAmount.currency)
+    const sentAmount = sendAmount
+    const curDate = (new Date()).toISOString()
+    let failed = true
+    if (data.currentState === 'COMPLETED') {
+      failed = false
+    }
+    const responseOut = {
+      id: IlpTransformer.toILPOutgoingPaymentUrlFromSDKTransferId(sdkTransferId),
+      paymentPointer: "$Pch.Cnp",
+      quoteId: reqBody.quoteId,
+      failed,
+      receiver: IlpTransformer.toILPIncomingPaymentUrlFromSDKTransferId(sdkTransferId),
+      receiveAmount,
+      sendAmount,
+      sentAmount,
+      createdAt: curDate,
+      updatedAt: curDate
+    }
+    return h.response(responseOut).code(status)
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      Logger.error('error message: ', error.message);
+      return h.response(error.message).code(500)
+    } else {
+      Logger.error('unexpected error: ', error);
+      return h.response('An unexpected error occurred').code(500)
+    }
+  }
+}
+
 export default {
-  IdTypeIncomingPaymentsPost,
-  IdTypeCreateQuote
+  IdTypeCreateIncomingPayment,
+  IdTypeCreateQuote,
+  IdTypeCreateOutgoingPayment
 }

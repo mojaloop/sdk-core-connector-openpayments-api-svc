@@ -65,6 +65,15 @@ export class IlpTransformer {
     const tempArray = quoteUrl.split('/')
     return tempArray[tempArray.length - 1]
   }
+
+  static toILPOutgoingPaymentUrlFromSDKTransferId = (transferId: string) => {
+    return '$Cnp/outgoing-payments/' + transferId
+  }
+
+  static toSDKTransferIdFromILPOutgoingPaymentUrl = (outgoingPaymentUrl: string) => {
+    const tempArray = outgoingPaymentUrl.split('/')
+    return tempArray[tempArray.length - 1]
+  }
  
   // static toUUID(associationId: string): string {
   //   // TODO: Implement conversion

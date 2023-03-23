@@ -1,0 +1,66 @@
+{
+  "test_cases": [
+    {
+      "id": 1,
+      "name": "Create Outgoing Payment - OpenPayments",
+      "requests": [
+        {
+          "id": 1,
+          "description": "Create Outgoing Payment",
+          "apiVersion": {
+            "minorVersion": 1,
+            "majorVersion": 0,
+            "type": "openpayments_core_connector",
+            "asynchronous": false,
+            "specFile": "spec_files/api_definitions/openpayments_core_connector_0.1/api_spec.yaml",
+            "callbackMapFile": "spec_files/api_definitions/openpayments_core_connector_0.1/callback_map.json",
+            "responseMapFile": "spec_files/api_definitions/openpayments_core_connector_0.1/response_map.json",
+            "jsfRefFile": "spec_files/api_definitions/openpayments_core_connector_0.1/mockRef.json",
+            "triggerTemplatesFolder": "spec_files/api_definitions/openpayments_core_connector_0.1/trigger_templates"
+          },
+          "operationPath": "/{idType}/{idValue}/outgoing-payments",
+          "path": "/MSISDN/987654321/outgoing-payments",
+          "method": "post",
+          "params": {
+            "idType": "MSISDN",
+            "idValue": "987654321"
+          },
+          "url": "{$inputs.BACKEND_ENDPOINT}",
+          "body": {
+            "quoteId": "$Cnp/quotes/02780c39-648e-1534-ba9d-004e0ea31477",
+            "description": "string",
+            "externalRef": "string"
+          },
+          "tests": {
+            "assertions": [
+              {
+                "id": 1,
+                "description": "Status code is 200",
+                "exec": [
+                  "expect(response.status).equals(200)"
+                ]
+              },
+              {
+                "id": 2,
+                "description": "Response should have sentAmount",
+                "exec": [
+                  "expect(response.body).to.have.property('sentAmount')"
+                ]
+              },
+              {
+                "id": 3,
+                "description": "parameter failed in response should not be true",
+                "exec": [
+                  "expect(response.body.failed).not.equals(true)"
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "fileInfo": {
+        "path": "happy_path/outgoing-payment.json"
+      }
+    }
+  ]
+}

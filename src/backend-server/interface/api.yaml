@@ -341,12 +341,25 @@ paths:
         - $ref: '#/components/parameters/signature'
       tags:
         - incoming-payment
-  /outgoing-payments:
+  '/{idType}/{idValue}/outgoing-payments':
     post:
       summary: Create an Outgoing Payment
       tags:
         - outgoing-payment
-      operationId: create-outgoing-payment
+      operationId: create-outgoing-payment-id-type-value
+      parameters:
+        - name: idType
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/idType'
+        - name: idValue
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/idValue'
+        - $ref: '#/components/parameters/signature-input'
+        - $ref: '#/components/parameters/signature'
       responses:
         '201':
           description: Outgoing Payment Created
@@ -413,10 +426,7 @@ paths:
         An **outgoing payment** is a sub-resource of a payment pointer. It represents a payment from the payment pointer.
 
         Once created, it is already authorized and SHOULD be processed immediately. If payment fails, the Account Servicing Entity must mark the **outgoing payment** as `failed`.
-      parameters:
-        - $ref: '#/components/parameters/signature-input'
-        - $ref: '#/components/parameters/signature'
-    description: Create a new outgoing payment at the payment pointer.
+  /outgoing-payments:
     get:
       summary: List Outgoing Payments
       operationId: list-outgoing-payments

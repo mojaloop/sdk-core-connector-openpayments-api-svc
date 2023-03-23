@@ -5,11 +5,15 @@
       "type": "file"
     },
     {
+      "name": "create-quote.json",
+      "type": "file"
+    },
+    {
       "name": "incoming-payment.json",
       "type": "file"
     },
     {
-      "name": "create-quote.json",
+      "name": "outgoing-payment.json",
       "type": "file"
     }
   ]
