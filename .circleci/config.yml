@@ -233,74 +233,32 @@ jobs:
             gh release create "v${RELEASE_TAG}" --title "v${RELEASE_TAG} Release" --draft=false --notes "${RELEASE_CHANGES}" ./CHANGELOG.md
 
   publish:
-    executor: default-machine
+    docker:
+      - image: jdrouet/docker-with-buildx:stable
     steps:
       - checkout
-      - run:
-          name: Setup for LATEST release
-          command: |
-            echo "export RELEASE_TAG=$RELEASE_TAG_PROD" >> $BASH_ENV
-            echo "RELEASE_TAG=$RELEASE_TAG_PROD"
-
-            PACKAGE_VERSION=$(cat package-lock.json | jq -r .version)
-            echo "export PACKAGE_VERSION=${PACKAGE_VERSION}" >> $BASH_ENV
-            echo "PACKAGE_VERSION=${PACKAGE_VERSION}"
-      - attach_workspace:
-          at: /tmp
-      - run:
-          name: Load the pre-built docker image from workspace
-          command: | 
-            docker load -i /tmp/docker-image-local.tar
-      - run:
-          name: Login to Docker Hub
-          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run:
-          name: Re-tag pre built image
-          command: |
-            docker tag $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:local $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
-            docker tag $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:local $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG
-      - run:
-          name: Publish Docker image $CIRCLE_TAG & Latest tag to Docker Hub
-          command: |
-            echo "Publishing $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG"
-            docker push $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
-            echo "Publishing $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG"
-            docker push $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG
+      - setup_remote_docker:
+          version: 18.09.3
+      - run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+      - run: |
+          docker buildx build --push \
+            --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
+            --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
+            --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG_PROD .
 
   publish-snapshot:
-    executor: default-machine
+    docker:
+      - image: jdrouet/docker-with-buildx:stable
     steps:
       - checkout
-      - run:
-          name: Setup for SNAPSHOT release
-          command: |
-            echo "export RELEASE_TAG=$RELEASE_TAG_SNAPSHOT" >> $BASH_ENV
-            echo "RELEASE_TAG=$RELEASE_TAG_SNAPSHOT"
-
-            PACKAGE_VERSION=$(cat package-lock.json | jq -r .version)
-            echo "export PACKAGE_VERSION=${PACKAGE_VERSION}" >> $BASH_ENV
-            echo "PACKAGE_VERSION=${PACKAGE_VERSION}"
-      - attach_workspace:
-          at: /tmp
-      - run:
-          name: Load the pre-built docker image from workspace
-          command: | 
-            docker load -i /tmp/docker-image-local.tar
-      - run:
-          name: Login to Docker Hub
-          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run:
-          name: Re-tag pre built image
-          command: |
-            docker tag $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:local $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
-            docker tag $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:local $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG
-      - run:
-          name: Publish Docker image $CIRCLE_TAG & Latest tag to Docker Hub
-          command: |
-            echo "Publishing $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG"
-            docker push $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
-            echo "Publishing $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG"
-            docker push $DOCKER_ORG/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG
+      - setup_remote_docker:
+          version: 18.09.3
+      - run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+      - run: |
+          docker buildx build --push \
+            --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
+            --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$CIRCLE_TAG
+            --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_TAG_SNAPSHOT .
 
 
 ##
