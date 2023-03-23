@@ -8,6 +8,6 @@
         "CURRENCY2": "MXN",
         "AMOUNT1": "100",
         "AMOUNT2": "150",
-        "BACKEND_ENDPOINT": "http://fx-converter:4001"
+        "BACKEND_ENDPOINT": "http://sdk-core-connector-openpayments-api-svc:3000"
     }
 }
