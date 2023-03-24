@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/sdk-core-connector-openpayments-api-svc",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "OpenPayments Core Connector for SDK Scheme Adapter",
   "repository": {
     "type": "git",

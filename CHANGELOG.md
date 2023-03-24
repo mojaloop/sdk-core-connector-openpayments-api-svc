@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/mojaloop/sdk-core-connector-openpayments-api-svc/compare/v0.1.6...v0.1.7) (2023-03-23)
+
+
+### Bug Fixes
+
+* cicd ([d888c4c](https://github.com/mojaloop/sdk-core-connector-openpayments-api-svc/commit/d888c4c4a5e0c2b6002e9f822e85ca46bf5c21fb))
+
 ### 0.1.6 (2023-03-23)
 
 
