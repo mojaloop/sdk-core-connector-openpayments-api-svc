@@ -10,9 +10,16 @@ services:
     build:
       context: .
     environment:
-      - ENDPOINTS_SDK_URL=http://sdk-scheme-adapter:4001
+      - ENDPOINTS_SDK_URL=http://fx-converter:4001
     ports:
       - "3000:3000"
+
+  fx-converter:
+    image: mojaloop/fx-converter-template:v0.1.4
+    environment:
+      - ENDPOINTS_SDK_URL=http://sdk-scheme-adapter:4001
+    ports:
+      - "4001:4001"
 
   sdk-scheme-adapter:
     image: mojaloop/sdk-scheme-adapter:v22.0.0
@@ -59,7 +66,7 @@ services:
       - ENABLE_FSPIOP_EVENT_HANDLER=false
     ports:
       - "4000:4000"
-      - "4001:4001"
+      - "14001:4001"
     volumes:
       - ./docker/sdk/secrets/outbound-cacert.pem:/secrets/outbound-cacert.pem
       - ./docker/sdk/secrets/outbound-cert.pem:/secrets/outbound-cert.pem
@@ -80,7 +87,7 @@ services:
     restart: always
 
   mojaloop-testing-toolkit:
-    image: mojaloop/ml-testing-toolkit:v15.7.0
+    image: mojaloop/ml-testing-toolkit:v16.0.0
     # image: mojaloop/ml-testing-toolkit:v16.1.0-snapshot.3
     user: root
     volumes:
@@ -94,7 +101,7 @@ services:
       - -c
       - "npm start"
   mojaloop-testing-toolkit-ui:
-    image: mojaloop/ml-testing-toolkit-ui:v15.1.3
+    image: mojaloop/ml-testing-toolkit-ui:v15.3.0
     ports:
       - "6060:6060"
     environment:

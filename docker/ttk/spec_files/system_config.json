@@ -11,9 +11,7 @@
     "forward": 1,
     "userSettings": 1
   },
-  "DB": {
-    "URI": "mongodb://ttk:ttk@localhost:27017/ttk"
-  },
+  "DB": {},
   "OAUTH": {
     "AUTH_ENABLED": false,
     "APP_OAUTH_CLIENT_KEY": "ttk",

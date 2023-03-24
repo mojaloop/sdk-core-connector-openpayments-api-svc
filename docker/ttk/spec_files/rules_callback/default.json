@@ -100,8 +100,8 @@
         "scripts": {
           "exec": [
             "const quoteBody = JSON.parse(request.body)",
-            "const feePercent = 5",
-            "const commissionPercent = 2",
+            "const feePercent = 10",
+            "const commissionPercent = 3",
             "environment.quotePayeeFspFee = Math.round(Number(quoteBody.amount.amount) *  feePercent / 100)",
             "environment.quotePayeeFspCommission = Math.round(Number(quoteBody.amount.amount) *  commissionPercent / 100)",
             "environment.quoteTransferAmount = quoteBody.amount.amount",
