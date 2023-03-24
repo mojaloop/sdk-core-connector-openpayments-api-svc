@@ -21,17 +21,6 @@ Refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to contribu
 
 This repository is an initial implementation for the OpenPayments core connector.
 
-## Block diagram
-
-```mermaid
-flowchart TD
-    Backend[FSP Backend] -->|OpenPayments API Requests| CC[Core Connector]
-    CC -->|SDK API Requests in Currency1| FX(fa:fa-exchange FX Converter)
-    FX -->|SDK API Requests in Currency2| SDK[SDK Scheme Adapter]
-    SDK -->|Responses in Currency2| FX
-    FX -->|Responses in Currency1| CC
-    CC -->|OpenPayments API Responses| Backend
-```
 
 ## Sequence Diagram
 
@@ -41,38 +30,65 @@ sequenceDiagram
 
     participant Backend as Wallet
     participant CC as Core Connector
+    participant FX as FX Converter
     participant SDK as SDK Scheme Adapter
     participant Switch as Mojaloop Switch
 
     Backend->>+CC: Create an Incoming Payment
     Note right of Backend: POST /MSISDN/987654321/incoming-payments
-    CC->>SDK: POST /transfers
+    CC->>FX: POST /transfers
+    FX->>SDK: POST /transfers (Converted Currency)
     SDK->>Switch: GET /parties/MSISDN/987654321
     Switch->>SDK: PUT /parties/MSISDN/987654321
-    SDK->>CC: Response with a transferID and party information
+    SDK->>FX: Response with a transferID and party information
+    FX->>CC: Response with a transferID and party information
     CC->>Backend: Response with a unique payment pointer
 
     Backend->>CC: Create a Quote
     Note right of Backend: POST /MSISDN/987654321/quotes
-    CC->>SDK: PUT /transfers (acceptParty: true)
+    CC->>FX: PUT /transfers (acceptParty: true)
+    FX->>SDK: PUT /transfers (acceptParty: true)
     SDK->>Switch: POST /quotes
     Switch->>SDK: PUT /quotes
-    SDK->>CC: Response with quote information
+    SDK->>FX: Response with quote information
+    FX->>CC: Response with quote information (Converted Currency)
     CC->>Backend: Response with a quote identifier
 
     Backend->>CC: Create an Outgoing Payment (quote identifier)
     Note right of Backend: POST /MSISDN/987654321/outgoing-payments
-    CC->>SDK: PUT /transfers (acceptQuote: true)
+    CC->>FX: PUT /transfers (acceptQuote: true)
+    FX->>SDK: PUT /transfers (acceptQuote: true)
     SDK->>Switch: POST /transfers
     Switch->>SDK: PUT /transfers
-    SDK->>CC: Response with transfer status
+    SDK->>FX: Response with transfer status
+    FX->>CC: Response with transfer status (Converted Currency)
     CC->>Backend: Response with transfer status
 
 ```
 
----
+## Get Started
 
-## Pre-requisites
+### Pre-requisites
+- git
+- docker
+
+### Running the docker stack
+
+```bash
+git clone https://github.com/mojaloop/sdk-core-connector-openpayments-api-svc.git
+cd sdk-core-connector-openpayments-api-svc
+docker compose up
+```
+
+### Making a transfer using Testing Toolkit UI
+- Open TTK UI on `http://localhost:6060`
+- Open the menu item `Test Runner` in TTK UI in a new tab
+- Click on `Collection Manager` button and import the file 'testing-toolkit/collections/payer-tests/sendmoney_auto_acceptance.json'
+- Click on `Send` button
+- And go to tab `Demo View` and observe the requests and responses for each request
+
+
+## Development
 
 ### Install dependencies
 
